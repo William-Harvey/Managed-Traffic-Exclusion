@@ -231,19 +231,22 @@ Expected result: a timestamp in milliseconds roughly one hour ahead of now.
 
 1. **Create a variable**
    - Go to **Variables** > **New** > **JavaScript Variable**.
-   - Set the global variable name to `isManagedInternalTraffic`.
+   - Set the global variable name to `isManagedInternalTraffic` (no `window.` prefix).
    - Name the variable **Managed Internal Traffic**.
 
-2. **Create a trigger**
-   - Go to **Triggers** > **New** > **Page View** > **All Pages** or the event type your tags use.
-   - Choose **Some Page Views** and set the condition: **Managed Internal Traffic** equals `true`.
+2. **Create a trigger that matches every event**
+   - Go to **Triggers** > **New** > **Custom Event**.
+   - Set the event name to `.*` and tick **Use regex matching**, so the trigger matches every event the container sees, including page views, clicks, form submissions and custom events.
+   - Choose **Some Custom Events** and set the condition: **Managed Internal Traffic** equals `true`.
    - Name the trigger **Internal Traffic Exclusion**.
 
 3. **Apply the trigger as an exception**
-   - Open each tracking tag (Google Analytics, advertising pixels, and so on).
+   - Open each tag that sends data (Google Analytics, advertising pixels, CRM scripts, and so on).
    - Under **Triggering**, add **Internal Traffic Exclusion** as an **Exception**.
 
-Because the flag is set before GTM loads, no race condition handling is needed. If you use a consent or data layer initialisation step, make sure the variable is read at tag fire time rather than cached earlier.
+**Why a Custom Event trigger and not a Page View trigger.** An exception only blocks a tag when the exception trigger fires on the same event as the tag. A Page View exception does nothing for tags fired by clicks, scroll depth, form submissions or data layer events. The regex Custom Event trigger fires on all of them.
+
+Because the flag is set before GTM loads, no race condition handling is needed. The container still loads for staff; only the excepted tags are suppressed. When the extension is paused or not installed, the variable is `undefined`, the exception never matches and tracking runs normally.
 
 ## Files
 
