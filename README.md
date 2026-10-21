@@ -262,4 +262,4 @@ Because the flag is set before GTM loads, no race condition handling is needed. 
 
 ## License
 
-MIT License. See `LICENSE`.
+MIT License. See the `LICENSE` file.
