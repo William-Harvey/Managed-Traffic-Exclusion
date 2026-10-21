@@ -28,6 +28,11 @@ A managed browser extension solves this at the source:
 
 The full source code is open under the MIT licence at [github.com/William-Harvey/Managed-Traffic-Exclusion](https://github.com/William-Harvey/Managed-Traffic-Exclusion).
 
+Further reading:
+
+- [Keeping staff out of your analytics when IP filters no longer work](https://www.williamharvey.uk/thoughts/keeping-staff-out-of-your-analytics-when-ip-filters-no-longer-work)
+- [How companies using GTM, Google Admin and Microsoft Intune can exclude internal traffic](https://www.linkedin.com/pulse/how-companies-using-gtm-google-admin-microsoft-intune-william-harvey-mprqe/) (LinkedIn)
+
 ## Screenshots
 
 | Filter active | Filter paused |
