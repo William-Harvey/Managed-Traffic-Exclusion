@@ -26,6 +26,8 @@ A managed browser extension solves this at the source:
 - **Private by design.** Nothing is collected or transmitted. The only thing stored is a local timestamp for the pause feature.
 - **No site changes needed.** Once the Tag Manager rule exists, the analytics team controls exclusions without touching the website's code.
 
+The full source code is open under the MIT licence at [github.com/William-Harvey/Managed-Traffic-Exclusion](https://github.com/William-Harvey/Managed-Traffic-Exclusion).
+
 ## Screenshots
 
 | Filter active | Filter paused |
