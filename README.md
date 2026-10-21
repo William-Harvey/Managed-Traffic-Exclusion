@@ -12,6 +12,20 @@ window.isManagedInternalTraffic = true
 
 Google Tag Manager (GTM) or any other tag platform can read that flag and skip tracking tags when it is present. Only browsers with the extension installed are affected, and only on the domains listed in `manifest.json`.
 
+## Why an Extension Instead of IP Filtering
+
+Internal staff are often the largest source of noise in analytics and CRM data. Developers, marketers and sales teams visit the company's own sites every day, and every test click, form submission or refresh lands in the reports as if it came from a customer.
+
+IP-based exclusions no longer work reliably. With hybrid and remote work, staff connect from home networks, cafés and VPNs, and their addresses change constantly.
+
+A managed browser extension solves this at the source:
+
+- **Deployed centrally.** Organisations on Google Workspace or Microsoft 365 can force-install the extension through Google Admin, Microsoft Intune or Group Policy. Every managed browser gets it automatically, and updates roll out without any action from staff.
+- **Runs before tracking loads.** The content script runs at `document_start` and sets the flag before Google Tag Manager or any analytics script executes, so there is no race condition.
+- **Precise.** Only browsers with the extension are affected, and only on the listed domains. Customers are never excluded by mistake.
+- **Private by design.** Nothing is collected or transmitted. The only thing stored is a local timestamp for the pause feature.
+- **No site changes needed.** Once the Tag Manager rule exists, the analytics team controls exclusions without touching the website's code.
+
 ## Screenshots
 
 | Filter active | Filter paused |
@@ -101,8 +115,22 @@ Publish the extension from the **company's Chrome Web Store developer account**,
 5. **Submit for review** and wait for approval. Reviews usually take a few days. Host permissions for specific domains are low risk and normally pass without questions.
 
 6. **Deploy to staff**
-   - Share the Web Store link, or
-   - In the **Google Admin console**, go to **Devices** > **Chrome** > **Apps & extensions**, add the extension by its Web Store ID, and set it to **Force install**. This installs it automatically on managed Chrome browsers and stops staff from removing it.
+
+   Share the Web Store link for a manual install, or force-install it through the organisation's browser management tool so every managed browser receives it automatically and staff cannot remove it.
+
+   **Google Admin console (Chrome on Workspace-managed devices)**
+   - Go to **Devices** > **Chrome** > **Apps & extensions** > **Users & browsers**.
+   - Select the organisational unit, click **+**, choose **Add Chrome app or extension by ID**, and paste the extension's Web Store ID.
+   - Set the installation policy to **Force install** and save.
+
+   **Microsoft Intune (Edge or Chrome on Microsoft 365-managed devices)**
+   - For Edge: go to **Devices** > **Configuration** > **Create policy** > **Windows 10 and later** > **Settings catalog**. Search for **Control which extensions are installed silently** under Microsoft Edge, enable it, and add the extension ID. Edge can install Chrome Web Store extensions directly if the **Allow user-level native messaging** and Chrome Web Store update URL are set, or submit the same package to the Edge Add-ons store and use its ID instead.
+   - For Chrome: import the Chrome ADMX templates into the Settings catalog, then use **Configure the list of force-installed apps and extensions** with the Web Store ID.
+   - Assign the policy to the relevant device or user groups.
+
+   **Group Policy (on-premises Active Directory)**
+   - Install the Chrome or Edge ADMX templates on the domain controller.
+   - Under **Computer Configuration** > **Administrative Templates** > **Google** > **Google Chrome** > **Extensions** (or the equivalent Microsoft Edge path), enable **Configure the list of force-installed apps and extensions** and add the extension ID.
 
 7. **Updates**
    - For each new release, bump `version` in `manifest.json`, re-zip, upload the new package to the same item in the dashboard, and submit. Chrome updates installed copies automatically within a few hours of approval.
