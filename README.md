@@ -120,6 +120,83 @@ Click the extension icon while on a managed site.
 
 On any site that is not a managed domain, the popup shows a "No action needed" message and no controls.
 
+## Testing
+
+Use these checks after installing the extension, and again after any code change. Load the extension unpacked (Option A above) and reload it from the extensions page whenever you edit a file.
+
+### 1. Confirm the flag is set on a managed site
+
+1. Open a managed site, for example `https://www.bbc.co.uk`.
+2. Open DevTools (`Cmd+Option+I` on Mac, `F12` on Windows) and go to the **Console** tab.
+3. Make sure the context dropdown at the top left of the console says **top**, not the extension name.
+4. Run:
+
+```
+window.isManagedInternalTraffic
+```
+
+Expected result: `true`.
+
+### 2. Confirm the popup shows the active state
+
+1. Click the extension icon in the toolbar while on the managed site.
+2. The popup should show **Current Status: Active** with a green dot and the message "Your activity is excluded".
+3. The 1hr, 3hr and 6hr buttons should be visible and the **Cancel** button hidden.
+
+### 3. Pause the filter
+
+1. In the popup, click **1hr**.
+2. The page should reload itself and the popup should switch to **Current Status: Paused** with a live countdown and a **Cancel** button.
+3. Back in the console, run the same check:
+
+```
+window.isManagedInternalTraffic
+```
+
+Expected result: `undefined`.
+
+4. Optionally confirm the mirror the extension writes:
+
+```
+localStorage.getItem('mte_unblock_until')
+```
+
+Expected result: a timestamp in milliseconds roughly one hour ahead of now.
+
+### 4. Cancel the pause
+
+1. Click **Cancel** in the popup.
+2. The page should reload and the popup should return to **Current Status: Active**.
+3. In the console, `window.isManagedInternalTraffic` should be `true` again and the local storage key should be `null`.
+
+### 5. Check another managed subdomain
+
+1. While paused, navigate to a different managed origin, for example from `www.bbc.co.uk` to `www.bbc.com`.
+2. Within a second of the page loading, `window.isManagedInternalTraffic` should be `undefined`. On the very first load of a new origin during a pause the flag can be present for a few milliseconds before extension storage clears it; reload once and it should be absent from the start.
+
+### 6. Check a non-managed site
+
+1. Open any site that is not in the managed domains list, for example `https://www.google.com`.
+2. Click the extension icon. The popup should show the **No action needed** message with no pause buttons.
+3. In the console, `window.isManagedInternalTraffic` should be `undefined`, because the content scripts do not run on this site.
+
+### 7. Check the pause expires on its own
+
+1. Pause for 1hr and leave the tab open.
+2. After the hour, the popup countdown should return to **Active** and the page flag should be `true` again within five seconds, without reloading. Reloading the page also restores it immediately.
+
+### 8. Verify the Google Tag Manager rule
+
+1. In GTM, open **Preview** mode and connect it to a managed site.
+2. With the filter active, select a page view event in the debugger and check the **Variables** tab. The **Managed Internal Traffic** variable should be `true`, and tags using the exclusion trigger as an exception should show as **not fired**.
+3. Pause the filter, reload the page, and repeat. The variable should be `undefined` and the tags should fire.
+
+### Troubleshooting
+
+- **The flag stays `true` while paused.** Reload the extension on the extensions page, then reload the tab. Pages opened before an extension reload keep running the old content scripts.
+- **The popup says "Extension reloaded. Please close and reopen this popup."** Close the popup and click the icon again. This happens when the extension was reloaded while the popup was open.
+- **The popup shows "No action needed" on a managed site.** Check that the domain appears in both `manifest.json` and the `allowedHosts` list in `popup.js`, and that you reloaded the extension after editing them.
+
 ## Google Tag Manager Setup
 
 1. **Create a variable**
