@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Managed Traffic Exclusion</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div id="active-view">
+    <header>
+      <div class="header-row">
+        <h1>Managed Traffic Exclusion</h1>
+        <a href="#" id="whatIsThis" class="what-link">What is this?</a>
+      </div>
+      <p class="subtitle">Excludes internal traffic from customer-facing reports.</p>
+    </header>
+
+    <main>
+      <div class="main-content">
+        <div class="status-section">
+          <label id="statusLabel" class="status-label">Current Status</label>
+          <p id="status" class="status-value">Loading…</p>
+          <button id="btnReblock" class="resume-btn hidden">Cancel</button>
+          <div id="errorMessage" class="error-message hidden"></div>
+        </div>
+
+        <div class="controls-section">
+          <label class="section-label">Pause Filter</label>
+          <p class="section-hint">Only use when testing or browsing as a customer.</p>
+          <div class="button-grid">
+            <button id="btn1h" class="control-btn">1hr</button>
+            <button id="btn4h" class="control-btn">3hr</button>
+            <button id="btn8h" class="control-btn">6hr</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div id="inactive-view" class="hidden">
+      <header>
+          <div class="header-row">
+            <h1>Managed Traffic Exclusion</h1>
+            <a href="#" id="whatIsThisInactive" class="what-link">What is this?</a>
+          </div>
+          <p class="subtitle">Excludes internal traffic from customer-facing reports.</p>
+      </header>
+      <main>
+          <div class="inactive-content">
+            <div class="inactive-icon">&#10003;</div>
+            <p class="inactive-title">No action needed</p>
+            <p class="inactive-desc">This filter only applies to company websites such as bbc.com and bbc.co.uk. You're currently on an external site, so your activity isn't being filtered.</p>
+          </div>
+      </main>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
